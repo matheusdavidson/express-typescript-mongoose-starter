@@ -9,7 +9,7 @@
         "build-ts": "tsc -p src",
         "watch-ts": "tsc-watch -w -p src --onSuccess \"npm run start-dev\"",
         "start": "node dist/server.js",
-        "start-dev": "nodemon dist/server.js"
+        "start-dev": "NODE_ENV=development nodemon dist/server.js"
     },
     "keywords": [
         "Node",
@@ -24,6 +24,7 @@
     "dependencies": {
         "body-parser": "^1.17.2",
         "cookie-parser": "^1.4.3",
+        "dotenv": "^4.0.0",
         "ejs": "^2.5.7",
         "express": "^4.15.3",
         "morgan": "^1.8.2",

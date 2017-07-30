@@ -1,3 +1,4 @@
+import * as dotenv from "dotenv";
 import * as bodyParser from "body-parser";
 import config from "./config";
 import * as cookieParser from "cookie-parser";
@@ -6,6 +7,16 @@ import * as logger from "morgan";
 import * as path from "path";
 
 export default function () {
+
+
+    /*--------  Load environment variables from .env file  --------*/
+
+
+    setEnv();
+
+
+    /*--------  Start App  --------*/
+
 
     // 
     // Start app
@@ -88,3 +99,19 @@ export default function () {
 
     return app;
 };
+
+function setEnv() {
+
+    // 
+    // Set path
+    let path = 'src/.env';
+
+    // 
+    // Add env to path if is not production
+    if (process.env.NODE_ENV !== 'production') path += '.' + process.env.NODE_ENV;
+
+    // 
+    // Set env
+    dotenv.config({ path: path });
+
+}
