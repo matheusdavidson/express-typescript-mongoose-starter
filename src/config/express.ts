@@ -5,6 +5,7 @@ import * as cookieParser from "cookie-parser";
 import * as express from "express";
 import * as logger from "morgan";
 import * as path from "path";
+import * as mongoose from "mongoose";
 
 export default function () {
 
@@ -13,6 +14,14 @@ export default function () {
 
 
     setEnv();
+
+
+    /*--------  Connect to mongo  --------*/
+
+
+    mongoose.connect(process.env.MONGO_URI, {
+        db: { safe: true }
+    });
 
 
     /*--------  Start App  --------*/
@@ -26,6 +35,8 @@ export default function () {
     /*--------  Models  --------*/
 
 
+    // 
+    // Get all models and import
     for (let model of config.globFiles(config.models)) {
         require(path.resolve(model));
     }
@@ -60,6 +71,8 @@ export default function () {
     /*--------  Routes  --------*/
 
 
+    // 
+    // Get all routs and import
     for (let route of config.globFiles(config.routes)) {
         require(path.resolve(route)).default(app);
     }
