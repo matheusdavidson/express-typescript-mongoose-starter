@@ -7,124 +7,114 @@ import * as logger from "morgan";
 import * as path from "path";
 import * as mongoose from "mongoose";
 
-export default function () {
+class Express {
+
+    public express: express.Express;
+    private envFile = 'src/.env';
 
 
-    /*--------  Load environment variables from .env file  --------*/
+    /*--------  Constructor  --------*/
 
 
-    setEnv();
+    constructor() {
 
+        // 
+        // ENV
+        this.setEnv();
 
-    /*--------  Connect to mongo  --------*/
+        // 
+        // Mongo
+        this.connectToMongo();
 
+        // 
+        // Start App
+        this.express = express();
 
-    mongoose.connect(process.env.MONGO_URI, {
-        db: { safe: true }
-    });
+        // 
+        // Set view engine
+        this.setViewEngine();
 
+        // 
+        // Middleware
+        this.setMiddleware();
 
-    /*--------  Start App  --------*/
-
-
-    // 
-    // Start app
-    var app: express.Express = express();
-
-
-    /*--------  Models  --------*/
-
-
-    // 
-    // Get all models and import
-    for (let model of config.globFiles(config.models)) {
-        require(path.resolve(model));
+        // 
+        // Set static files
+        this.setStaticFiles();
     }
 
 
-    /*--------  Logs, body, cokkie and public folder  --------*/
+    /*--------  Methods  --------*/
 
 
-    // 
-    // Configure pug as view engine
-    app.set("views", path.join(__dirname, "../../src/views"));
-    app.set("view engine", "ejs");
+    /**
+     * Set env
+     * Set env from .env or .env.${NODE_ENV} file using dotenv
+     */
+    private setEnv() {
 
-    // 
-    // Add logging
-    app.use(logger("dev"));
+        // 
+        // Add NODE_ENV to path if is not production
+        if (process.env.NODE_ENV !== 'production') this.envFile += '.' + process.env.NODE_ENV;
 
-    // 
-    // Add body parser
-    app.use(bodyParser.json());
-    app.use(bodyParser.urlencoded({ extended: false }));
-
-    // 
-    // Add cookie parser
-    app.use(cookieParser());
-
-    // 
-    // Set static route for public folder
-    app.use(express.static(path.join(__dirname, "../../src/public")));
-
-
-    /*--------  Routes  --------*/
-
-
-    // 
-    // Get all routs and import
-    for (let route of config.globFiles(config.routes)) {
-        require(path.resolve(route)).default(app);
+        // 
+        // Set env from file
+        dotenv.config({ path: this.envFile });
     }
 
+    /**
+     * Connect to mongo
+     */
+    private connectToMongo() {
 
-    /*--------  404  --------*/
-
-
-    app.use((req: express.Request, res: express.Response, next: Function): void => {
-        let err: Error = new Error("Not Found");
-        next(err);
-    });
-
-
-    /*--------  Production error handler  --------*/
-
-
-    app.use((err: any, req: express.Request, res: express.Response, next): void => {
-        res.status(err.status || 500).render("error", {
-            message: err.message,
-            error: {}
-        });
-    });
-
-
-    /*--------  Development error handler  --------*/
-
-
-    if (app.get("env") === "development") {
-        app.use((err: Error, req: express.Request, res: express.Response, next): void => {
-            res.status(500).render("error", {
-                message: err.message,
-                error: err
-            });
+        // 
+        // Connect to mongo using mongoose
+        // @todo: fix "open()" DeprecationWarning warning
+        mongoose.connect(process.env.MONGO_URI, {
+            db: { safe: true }
         });
     }
 
-    return app;
-};
+    /**
+     * Set view engine
+     */
+    private setViewEngine() {
 
-function setEnv() {
+        // 
+        // Configure ejs as view engine
+        this.express.set("views", path.join(__dirname, "../../src/views"));
+        this.express.set("view engine", "ejs");
+    }
 
-    // 
-    // Set path
-    let path = 'src/.env';
+    /**
+     * Set middleware
+     */
+    private setMiddleware() {
 
-    // 
-    // Add env to path if is not production
-    if (process.env.NODE_ENV !== 'production') path += '.' + process.env.NODE_ENV;
+        // 
+        // Add logging
+        this.express.use(logger("dev"));
 
-    // 
-    // Set env
-    dotenv.config({ path: path });
+        // 
+        // Add body parser
+        this.express.use(bodyParser.json());
+        this.express.use(bodyParser.urlencoded({ extended: false }));
 
+        // 
+        // Add cookie parser
+        this.express.use(cookieParser());
+
+    }
+
+    /**
+     * Set static files
+     */
+    private setStaticFiles() {
+
+        // 
+        // Set static route for public folder
+        this.express.use(express.static(path.join(__dirname, "../../src/public")));
+    }
 }
+
+export default new Express().express;
