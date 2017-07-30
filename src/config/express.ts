@@ -5,7 +5,7 @@ import * as express from "express";
 import * as logger from "morgan";
 import * as path from "path";
 
-export default function (db) {
+export default function () {
 
     // 
     // Start app
@@ -22,15 +22,27 @@ export default function (db) {
 
     /*--------  Logs, body, cokkie and public folder  --------*/
 
-    // view engine setup
-    app.set("views", path.join(__dirname, "../../src/views"));
-    app.set("view engine", "jade");
 
-    //app.use(favicon(path.join(__dirname, "public", "favicon.ico")));
+    // 
+    // Configure pug as view engine
+    app.set("views", path.join(__dirname, "../../src/views"));
+    app.set("view engine", "ejs");
+
+    // 
+    // Add logging
     app.use(logger("dev"));
+
+    // 
+    // Add body parser
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({ extended: false }));
+
+    // 
+    // Add cookie parser
     app.use(cookieParser());
+
+    // 
+    // Set static route for public folder
     app.use(express.static(path.join(__dirname, "../../src/public")));
 
 
