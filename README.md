@@ -1,3 +1,5 @@
+**Pull Requests are welcome ;)**
+
 # Quickstart application with Express, Typescript, Mongoose
 This project is a starter for express, typescript and mongoose application, designed for Restful API's, but you can easily extend to make other things.
 
