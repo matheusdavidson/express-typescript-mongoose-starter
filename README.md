@@ -19,6 +19,7 @@ I couldn't find any complete guide to archieve this, so i've looked many tutoria
 ## Directory Structure
 ```
 express-typescript-mongoose-starter
+    ├── dist                  <= typescript will compile js to this folder
     ├── node_modules
     ├── src
     │    ├── .env             <= for production, for other envs, use: .env.${NODE_ENV}
