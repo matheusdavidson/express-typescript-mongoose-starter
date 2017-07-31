@@ -1,13 +1,15 @@
 import { Router, Request, Response, NextFunction } from 'express';
+import ExampleRouter from '../api/example/example.router';
 
 export default class Routes {
 
     public router: Router;
     private app;
 
-    /**
-     * Initialize the Routes.router
-     */
+
+    /*--------  Constructor  --------*/
+
+
     constructor(app) {
 
         // 
@@ -23,9 +25,12 @@ export default class Routes {
         this.setAllRoutes();
     }
 
+
+    /*--------  Methods  --------*/
+
+
     /**
-     * Take each handler, and attach to one of the Express.Router's
-     * endpoints.
+     * Set all app routes
      */
     setAllRoutes() {
 
@@ -35,6 +40,7 @@ export default class Routes {
 
         // 
         // Your routes goes here
+        this.app.use('/api/examples', ExampleRouter);
 
 
         /*--------  Main routes  --------*/
