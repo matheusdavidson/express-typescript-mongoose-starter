@@ -1,5 +1,5 @@
 {
-    "name": "express-typescript",
+    "name": "express-typescript-mongoose-starter",
     "version": "1.0.0",
     "description": "A starter for Node JS, Express, Typescript, Mongoose aplication",
     "main": "server.js",

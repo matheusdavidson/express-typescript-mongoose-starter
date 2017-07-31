@@ -26,6 +26,7 @@ export class ExampleRouter {
      */
     init() {
         this.router.get('/', ExampleController.getAll);
+        this.router.post('/', ExampleController.create);
     }
 
 }
