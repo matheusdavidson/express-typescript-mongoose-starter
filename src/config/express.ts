@@ -1,15 +1,15 @@
 import * as dotenv from "dotenv";
 import * as bodyParser from "body-parser";
-import config from "./config";
 import * as cookieParser from "cookie-parser";
 import * as express from "express";
 import * as logger from "morgan";
 import * as path from "path";
 import * as mongoose from "mongoose";
+import Routes from "./routes";
 
 class Express {
 
-    public express: express.Express;
+    public app: express.Express;
     private envFile = 'src/.env';
 
 
@@ -28,7 +28,7 @@ class Express {
 
         // 
         // Start App
-        this.express = express();
+        this.app = express();
 
         // 
         // Set view engine
@@ -41,6 +41,10 @@ class Express {
         // 
         // Set static files
         this.setStaticFiles();
+
+        // 
+        // Routes
+        this.setRoutes();
     }
 
 
@@ -82,8 +86,8 @@ class Express {
 
         // 
         // Configure ejs as view engine
-        this.express.set("views", path.join(__dirname, "../../src/views"));
-        this.express.set("view engine", "ejs");
+        this.app.set("views", path.join(__dirname, "../../src/views"));
+        this.app.set("view engine", "ejs");
     }
 
     /**
@@ -93,16 +97,16 @@ class Express {
 
         // 
         // Add logging
-        this.express.use(logger("dev"));
+        this.app.use(logger("dev"));
 
         // 
         // Add body parser
-        this.express.use(bodyParser.json());
-        this.express.use(bodyParser.urlencoded({ extended: false }));
+        this.app.use(bodyParser.json());
+        this.app.use(bodyParser.urlencoded({ extended: false }));
 
         // 
         // Add cookie parser
-        this.express.use(cookieParser());
+        this.app.use(cookieParser());
 
     }
 
@@ -113,8 +117,18 @@ class Express {
 
         // 
         // Set static route for public folder
-        this.express.use(express.static(path.join(__dirname, "../../src/public")));
+        this.app.use(express.static(path.join(__dirname, "../../src/public")));
+    }
+
+    /**
+     * Set routes
+     */
+    private setRoutes() {
+
+        // 
+        // Create Routes, and export its configured Express.Router
+        new Routes(this.app);
     }
 }
 
-export default new Express().express;
+export default new Express().app;
