@@ -37,6 +37,10 @@ express-typescript-mongoose-starter
     ├── tsconfig.json
     ├── README.md
 ```
+## Todo
+- [ ] Add JWT based authentication with passport.js
+- [ ] Add socket.io and inject socket instace to routes and controller
+- [ ] Command line support to generate libraries, modules, routes and controllers
 
 ## License
 
